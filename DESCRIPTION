@@ -1,0 +1,21 @@
+Package: flagVis
+Type: Package
+Title: R Package Template
+Version: 0.1.0
+Author: Yoonsik Park
+Maintainer: Yoonsik Park <yoonsik.park@mail.utoronto.ca>
+Description: 	flagVis contains a set of tools to easily
+		create colorful representations
+		of datasets, by performing a non-negative
+		matrix factorization. The inspiration
+		for this project was the idea of "flags"
+		that can identify different cancer
+		subtypes based on genomic mutation data.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    NMF, colorspace
+Suggests:
+    testthat
+RoxygenNote: 6.1.0
