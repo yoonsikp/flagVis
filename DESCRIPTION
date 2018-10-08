@@ -14,8 +14,7 @@ Description: 	flagVis contains a set of tools to easily
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports:
-    NMF, colorspace
+Imports: NMF, colorspace
 Suggests:
     testthat
 RoxygenNote: 6.1.0
