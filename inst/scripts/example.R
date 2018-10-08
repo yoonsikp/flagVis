@@ -1,6 +1,6 @@
-# demo.R
+# example.R
 #
-# Purpose: To demo the capabilities of flagVis on sample mutation data
+# Purpose: To show the capabilities of flagVis on sample mutation data
 # Version: 0.1
 # Date: 2018-10-06
 # Author: Yoonsik Park
