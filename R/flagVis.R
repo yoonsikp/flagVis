@@ -48,6 +48,7 @@ flagVis <- function(x,
 #'
 #' @param rgbData the RGB data, represented as hex strings. Each column may hold multiple RGB hex strings.
 #' @param nmfData the object returned from the non-negative matrix factorization
+#' @param nmfNormData the normalized nmfData, used to recalculate rgbData when the color palette is changed
 #' @param basisOrder the ranking of the normalized coefficient matrix rows by standard deviation (1 being highest).
 #' @seealso \code{\link{flagVis}}
 #' @examples
