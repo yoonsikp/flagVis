@@ -1,4 +1,4 @@
-# flagVis.R
+# server.R
 #
 # Code referenced from https://github.com/hyginn/rptPlus on December 4th, 2018
 # Parts of the code inspired by the RStudio shiny tutorial script 01_hello.

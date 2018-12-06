@@ -27,7 +27,7 @@ The transformed point as a "color" object in polarLAB space.
 Then, the point is scaled in between the hue and lightness of the given accent colors.
 }
 \examples{
-myColor <- transformPolarLAB(c(0, 1), COLOR1, COLOR2)
-myColorAgain <- transformPolarLAB(c(1, 0), COLOR1, COLOR2,
+myColor <- transformPolarLAB(c(0, 1), colorspace::RGB(0, 1, 0), colorspace::RGB(0, 1, 0))
+myColorAgain <- transformPolarLAB(c(1, 0), colorspace::RGB(0, 1, 0), colorspace::RGB(0, 1, 0),
    colorspace::polarLAB(10,100,260), colorspace::polarLAB(10,100,160))
 }

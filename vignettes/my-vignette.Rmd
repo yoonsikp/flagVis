@@ -1,10 +1,10 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "flagVis"
+author: "Yoonsik Park"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{flagVis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,51 +15,138 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+## License 
+Licensed under the MIT license. See the LICENSE file in the package for more details.
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Introduction and Purpose
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+The original purpose of this package was to create flags that allow someone to recognize a cancer type just from its colors. For example, the colors black, red, and yellow in horizontal bars, would immediately be recognized as the German flag. The inspiration was from my work on cancer genetics during my undergraduate research course, where I noticed an article about extracting cancer "signatures" from mutation data. (https://www.nature.com/articles/nature12477#s1). They found that every cancer type could be described by a handful of features. These features, multiplied by the coefficients for each cancer type, would result in the original (but large) matrix. 
 
-## Vignette Info
+This form of extracting a lower-dimensional feature set is called "Non-negative matrix factorization"". However, this algorithm is much more general, and can be applied to almost any matrix data, with the only condition that the input has absolutely no negative numbers. Furthermore, the basis matrix determined through this method has the benefit of containing feature representations that are more human understandable. This is because of the purely additive (non-negative) aspect. Other dimensionality reduction techniques produce features that subtract and add values. NMF tends to create features that are independent of each other, e.g. NMF would produce eyes, nose, and mouth if decomposing a face image.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+Since NMF produces useful signatures, then perhaps NMF may potentially be used to create a better visualization tool. My future goals with this is to be able to input a previous feature list from a previous, and as input data evolves and improves, a feature can be split into it's more constituent parts -> eyes into left eye and right eye. However, the NMF package used in this project has some rough edges, and it is not currently technically feasible using its functions/API.
 
-## Styles
+## Dependencies and Loading the Library
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+The only package that is required that isn't part of the base R installation is NMF, which can easily be downloaded from CRAN. The other package required for the Interactive Webpage is the shiny package.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+```{r, eval=FALSE}
+if (! require(NMF, quietly=TRUE)) {
+  install.packages("NMF")
+  library(NMF)
+} 
 
-## Figures
+if (! require(shiny, quietly=TRUE)) {
+  install.packages("shiny")
+  library(shiny)
+}
+``` 
+We can install and load the package directly from GitHub:
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+```{r, eval=FALSE}
+devtools::install_github("yoonsikp/flagVis")
+```
+```{r}
+library(flagVis)
+```
+## Sample Data
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+There is a sample data included with this package, called `sampleSmallMutationData`. This data is a subset of the cancer mutation data used for the original Nature paper that inspired this project. The paper counted every mutation and categorized by mutation type: e.g. `A[C>A]A` meaning `ACA -> AAA`. We can view some of the cancer types (columns):
+
+```{r}
+colnames(sampleSmallMutationData)[c(1,40,80,120)]
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+as well as the mutation types:
+```{r}
+rownames(sampleSmallMutationData)[c(1,4,8,12)]
 ```
 
-Also a quote using `>`:
+Finally, there exists another variable that stores the cancer types. This is used for pattern matching, and grouping multiple samples into one cancer type.
+
+```{r}
+sampleCancerTypeList
+```
+
+## Tutorial
+
+### Creating the flagVisData object
+The first step is very simple, as long as you make sure that your matrix consists solely of non-negative numbers. For flagVis, the columns are the samples/classes, and the rows are features of the samples/classes.
+
+The flagVis function only accepts one parameter, the input data. The flagVis function may take a long time depending on the input data.
+
+```{r}
+flagVisResult <- flagVis(sampleSmallMutationData)
+```
+The first thing you may notice is that the resulting output is actually of class `flagVisData`. We access its slots by using the `@` operator.
+
+```{r echo=TRUE}
+flagVisResult@nmfData
+```
+
+This is the full class definition for `flagVisData`. Check the documentation for more details.
+```{r, eval=FALSE}
+setClass(
+  "flagVisData",
+  representation(
+    rgbData = "array",
+    nmfData = "NMFfit",
+    nmfNormData = "matrix",
+    basisOrder = "data.frame"
+  )
+)
+```
+
+### Drawing Individual Flags
+Finally, we can draw an individual flag by choosing a result from `flagVisResult@rgbData`, with a custom title:
+
+```{r}
+createFlag(flagVisResult@rgbData[,109], title="A Sample Flag")
+```
+
+We can also specify the maximum rows in a flag:
+
+```{r}
+createFlag(c("#000000", "#FFFFFF", "#00FF00", "#0000FF"), maxColors = 2, title = "Hello!")
+```
+
+Here we can see that even if the rgbData has too many RGB values, the `createFlag` function will only choose the first two. 
+
+### Flag Coloring Explanation
+Each color of a flag contains two NMF coefficients, which are the values that determine whether a cancer type contains a certain feature or not. These two values form a vector that is is then transformed, such that values of 0 are closer to black, and values of 1 are more saturated. The colors are specified for each row of the flag. Different coefficients produce different hues. All color work is conducted in the CIELCh color space, before being reconverted to sRGB.
+
+### Flag Atlas
+
+There also exists a function to create a flag "atlas" based on the average values of a group. The group is determined by pattern matching the column name to a list of strings/prefixes. Since we only want to show a few examples of the atlas, we can choose a few interesting examples. 
+
+```{r}
+sampleCancerTypeList[c(1,2,15)]
+createAtlas(flagVisResult, sampleCancerTypeList[c(1,2,15)])
+```
+
+### Changing the Color Palette
+
+If you would like to specify custom colors, you can do so by recalculating the rgbData in the flagVisData class. The function to use is `nmfDataToRGB`. Here, you can specify a palette by giving it a list of `color-class` objects from the `colorspace` package. You can easily create colors from RGB values by using the `colorspace::RGB` function. Here I create an example palette and use it to recolor our flags from above.
+```{r}
+newPalette <- list(colorspace::RGB(28, 33, 168),
+                   colorspace::RGB(38, 168, 28),
+                   colorspace::RGB(255, 0, 0),
+                   colorspace::RGB(0, 0, 255),
+                   colorspace::RGB(0, 166, 255),
+                   colorspace::RGB(0, 255, 34))
+flagVisResult@rgbData <- nmfDataToRGB(flagVisResult@nmfNormData, colorPalette = newPalette)
+createFlag(flagVisResult@rgbData[,109], title="different")
+```
+
+
+## Shiny Interface
+
+To start the Shiny Interface, run the script in the `shiny-scripts` folder. Here you can choose the palette, and specify the flag you want to view. The first few cancer categories are much more interesting than the later ones.
+
+```{r, eval=FALSE}
+appDir <- system.file("shiny-scripts", "flagVis", package = "flagVis")
+shiny::runApp(appDir, display.mode = "normal")
+```
 
 > "He who gives up [code] safety for [code] speed deserves neither."
 ([via](https://twitter.com/hadleywickham/status/504368538874703872))
