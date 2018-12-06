@@ -15,15 +15,8 @@ createAtlas(x, types)
 \code{createAtlas} plots the average flag representation of each specified type. The function determines matching types by prefix matching the column name.
 }
 \examples{
-x <- nmf(x)
-myData <- flagVis(x)
-files <- returnExomeFiles(directory)
-selectedFiles <- selectSubsitutionSubType(files)
-for (i in 1:length(selectedFiles)){
-   selectedFiles[i] <- tail(strsplit(selectedFiles[i], "/", fixed=TRUE)[[1]], n=1)
-}
-tail(strsplit(type, "/", fixed=TRUE)[[1]], n=1)
-createAtlas(myData, selectedFiles)
+myData <- flagVis(sampleSmallMutationData)
+createAtlas(myData, sampleCancerTypeList)
 }
 \seealso{
 \code{\link{createFlag}}

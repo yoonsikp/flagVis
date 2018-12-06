@@ -4,7 +4,8 @@
 \alias{nmfDataToRGB}
 \title{\code{nmfDataToRGB} is the helper function to flagVis. It uses the coefficient matrix, x, to construct the rgbData attribute. It assumes that the values for x are only between 0 and 1.}
 \usage{
-nmfDataToRGB(x, factorsPerColor = 2, numColors = 4)
+nmfDataToRGB(x, factorsPerColor = 2, numColors = 4,
+  colorPalette = NULL)
 }
 \arguments{
 \item{x}{the coefficient matrix. Only non-negative numeric values should be in the matrix, with values between 0 and 1.}
@@ -12,6 +13,8 @@ nmfDataToRGB(x, factorsPerColor = 2, numColors = 4)
 \item{factorsPerColor}{the number of factors each color should represent. Currently only supports the value of 2.}
 
 \item{numColors}{the number of colors to output for each column.}
+
+\item{colorPalette}{a List containing multiple color-class objects. These are used for coloring}
 }
 \value{
 A 2D string array.

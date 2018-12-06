@@ -17,9 +17,6 @@ The file strings.
 \description{
 \code{selectSubsitutionSubType} returns only the filenames with the 96 substitution subtype
 }
-\examples{
-selectSubstitutionType("~/files/mutational_catalogs/exomes")
-}
 \seealso{
 \code{\link{returnExomeFiles}}
 }

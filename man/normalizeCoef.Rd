@@ -17,10 +17,6 @@ A numeric vector.
 \description{
 \code{normalizeCoef}  returns the normalized coefficients, based on the given normalization coefficients. This function divides each column in nmfCoef by the corresponding value in norms.
 }
-\examples{
-norms <-getL1Norms(basis(nmfResult))
-normalizeCoef(coefficients(nmfResult), norms)
-}
 \seealso{
 \code{\link{seq}}
 }

@@ -1,13 +1,4 @@
-library(colorspace)
 
-COLOR1 <- RGB(1, 0.1, 0)
-COLOR2 <- RGB(0, 1, 0)
-COLOR3 <- RGB(0, 0.2, 1)
-COLOR4 <- RGB(1, 1, 0)
-COLOR5 <- RGB(0, 0, 1)
-COLOR6 <- RGB(0, 1, 0)
-COLOR7 <- RGB(0.5, 0.5, 1)
-COLOR8 <- RGB(1, 0, 0.5)
 
 #' \code{transformPolarLAB} transforms a 2d point into the polarLAB colorspace, given two accent colors. This function first rotates the point 45 degrees, then compresses the space vertically.
 #' Then, the point is scaled in between the hue and lightness of the given accent colors.
@@ -20,7 +11,7 @@ COLOR8 <- RGB(1, 0, 0.5)
 #' @examples
 #' myColor <- transformPolarLAB(c(0, 1), COLOR1, COLOR2)
 #' myColorAgain <- transformPolarLAB(c(1, 0), COLOR1, COLOR2,
-#'    polarLAB(10,100,260), polarLAB(10,100,160))
+#'    colorspace::polarLAB(10,100,260), colorspace::polarLAB(10,100,160))
 #' @export
 
 transformPolarLAB <-
@@ -29,13 +20,13 @@ transformPolarLAB <-
            color2,
            color1Black = NULL,
            color2Black = NULL) {
-    color1 <- coords(as(color1, "polarLAB"))
-    color2 <- coords(as(color2, "polarLAB"))
+    color1 <- colorspace::coords(as(color1, "polarLAB"))
+    color2 <- colorspace::coords(as(color2, "polarLAB"))
     if (is.null(color1Black)) {
-      color1Black <- polarLAB(20, color1[2], color1[3])
+      color1Black <- colorspace::polarLAB(20, color1[2], color1[3])
     }
     if (is.null(color2Black)) {
-      color2Black <- polarLAB(20, color2[2], color2[3])
+      color2Black <- colorspace::polarLAB(20, color2[2], color2[3])
     }
     if (x[1] < 0 | x[2] < 0) {
       stop("no negative values!")
@@ -43,8 +34,10 @@ transformPolarLAB <-
     if (x[1] > 1 | x[2] > 1) {
       stop("no values greater than one!")
     }
-    color1Black <- coords(as(color1Black, "polarLAB"))
-    color2Black <- coords(as(color2Black, "polarLAB"))
+    color1Black <- colorspace::coords(as(color1Black, "polarLAB"))
+    color2Black <- colorspace::coords(as(color2Black, "polarLAB"))
+    # let's make the colors POP!!
+    x <- sqrt(sqrt(x))
     #rotate 45 degrees
     new_x <-
       x[1] * cos(45 / 360 * (2 * pi)) - x[2] * sin(45 / 360 * (2 * pi))
@@ -61,7 +54,7 @@ transformPolarLAB <-
     }
     shear <- (color1Black[3] - color1[3])
     axis2 <- minHue +  (maxHue - minHue) * new_x
-    return(polarLAB(axis1, color1[2], axis2 %% 360))
+    return(colorspace::polarLAB(axis1, color1[2], axis2 %% 360))
   }
 
 #' \code{convertValidRGB} converts any "color" object into a valid RGB hex string. Furthermore, it corrects gamma for visibility reasons.
@@ -71,43 +64,39 @@ transformPolarLAB <-
 #' @return A RGB hex string.
 #' @examples
 #' # Invalid RGB values...
-#' validHex <- convertValidRGB(RGB(1,0,0))
+#' validHex <- convertValidRGB(colorspace::RGB(1,0,0))
 #' validHex == "#FF0000"
 #' @export
 #'
 #'
-convertValidRGB <- function (colorToConvert, gamma = 1) {
-  hexVal <- hex(colorToConvert, fixup = TRUE)
-  newRGB <- hex2RGB(hexVal)
-  return(hex(sRGB(
-    coords(newRGB)[1] ^ (1 / gamma),
-    coords(newRGB)[2] ^ (1 / gamma),
-    coords(newRGB)[3] ^ (1 / gamma)
+convertValidRGB <- function (colorToConvert, gamma = 1.3) {
+  hexVal <- colorspace::hex(colorToConvert, fixup = TRUE)
+  newRGB <- colorspace::hex2RGB(hexVal)
+  return(colorspace::hex(colorspace::sRGB(
+    colorspace::coords(newRGB)[1] ^ (1 / gamma),
+    colorspace::coords(newRGB)[2] ^ (1 / gamma),
+    colorspace::coords(newRGB)[3] ^ (1 / gamma)
   ), fixup = TRUE))
 }
 #' \code{getNextColor} internal function for returning different colors based on counter.
 #'
 #' @param i the counter variable
+#' @param colorPalette the color palette, colors repeat once iterated through. Must be of color-class
 #' @return A "color" object.
-#' @export
 #'
 #'
-getNextColor <- function(i) {
-  if (i %% 8 == 0) {
-    return(COLOR1)
-  } else if (i %% 8 == 1) {
-    return(COLOR2)
-  } else if (i %% 8 == 2) {
-    return(COLOR3)
-  } else if (i %% 8 == 3) {
-    return(COLOR4)
-  } else if (i %% 8 == 4) {
-    return(COLOR5)
-  } else if (i %% 8 == 5) {
-    return(COLOR6)
-  } else if (i %% 8 == 6) {
-    return(COLOR7)
-  } else {
-    return(COLOR8)
-  }
+getNextColor <- function(i, colorPalette = list(colorspace::RGB(1, 0.1, 0),
+                                             colorspace::RGB(0, 1, 0),
+                                             colorspace::RGB(0, 0.2, 1),
+                                             colorspace::RGB(1, 1, 0),
+                                             colorspace::RGB(0, 0, 1),
+                                             colorspace::RGB(0, 1, 0),
+                                             colorspace::RGB(0.5, 0.5, 1),
+                                             colorspace::RGB(1, 0, 0.5))    ) {
+  num <- length(colorPalette)
+
+  return(colorPalette[[i %% num + 1]])
+
 }
+
+# [END]

@@ -4,7 +4,7 @@
 \alias{convertValidRGB}
 \title{\code{convertValidRGB} converts any "color" object into a valid RGB hex string. Furthermore, it corrects gamma for visibility reasons.}
 \usage{
-convertValidRGB(colorToConvert, gamma = 1)
+convertValidRGB(colorToConvert, gamma = 1.3)
 }
 \arguments{
 \item{colorToConvert}{the "color" object}
@@ -19,6 +19,6 @@ A RGB hex string.
 }
 \examples{
 # Invalid RGB values...
-validHex <- convertValidRGB(RGB(1,0,0))
+validHex <- convertValidRGB(colorspace::RGB(1,0,0))
 validHex == "#FF0000"
 }

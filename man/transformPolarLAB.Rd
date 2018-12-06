@@ -29,5 +29,5 @@ Then, the point is scaled in between the hue and lightness of the given accent c
 \examples{
 myColor <- transformPolarLAB(c(0, 1), COLOR1, COLOR2)
 myColorAgain <- transformPolarLAB(c(1, 0), COLOR1, COLOR2,
-   polarLAB(10,100,260), polarLAB(10,100,160))
+   colorspace::polarLAB(10,100,260), colorspace::polarLAB(10,100,160))
 }

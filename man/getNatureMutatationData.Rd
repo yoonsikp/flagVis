@@ -15,6 +15,3 @@ A 2d matrix, with columns representing the cancer subtypes, and the rows represe
 \description{
 \code{getNatureMutatationData} returns only the filenames with the 96 substitution subtype
 }
-\examples{
-getNatureMutatationData("~/files/mutational_catalogs/exomes")
-}

@@ -4,10 +4,15 @@
 \alias{getNextColor}
 \title{\code{getNextColor} internal function for returning different colors based on counter.}
 \usage{
-getNextColor(i)
+getNextColor(i, colorPalette = list(colorspace::RGB(1, 0.1, 0),
+  colorspace::RGB(0, 1, 0), colorspace::RGB(0, 0.2, 1), colorspace::RGB(1,
+  1, 0), colorspace::RGB(0, 0, 1), colorspace::RGB(0, 1, 0),
+  colorspace::RGB(0.5, 0.5, 1), colorspace::RGB(1, 0, 0.5)))
 }
 \arguments{
 \item{i}{the counter variable}
+
+\item{colorPalette}{the color palette, colors repeat once iterated through. Must be of color-class}
 }
 \value{
 A "color" object.

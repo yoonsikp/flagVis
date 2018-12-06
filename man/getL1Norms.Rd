@@ -15,7 +15,3 @@ A numeric vector.
 \description{
 \code{getL1Norms} returns the normalization coefficients for each column required for the basis columns. This type of normalization ensures that the column sum is 1
 }
-\examples{
-x <- getNatureMutatationData(directory)
-getL1Norms(basis(nmf(x, 3)))
-}

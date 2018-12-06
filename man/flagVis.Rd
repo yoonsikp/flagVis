@@ -25,6 +25,5 @@ A flagVisData Class.
 \code{flagVis} reduces the dimensions of 2D matrix data and calculates multiple rgb values representing each sample. The rank of the NMF will be determined by factorsPerColor * numColors.
 }
 \examples{
-x <- getNatureMutatationData("/your/directory")
-myData <- flagVis(x)
+myData <- flagVis(flagVis::sampleSmallMutationData)
 }

@@ -1,5 +1,5 @@
 #' Cancer Base Subtitution Data
-#' \code{smallMutationData.RData}
+#' \code{sampleSmallMutationData}
 #' Describes the frequencies of the 96 possible mutations for multiple different types of cancer.
 #' Since each mutation can be described as (C>A, C>G, C>T, T>A, T>C, T>G), by taking the one immediately preceding and after, we get 96 possibilities.
 #' There are 25 cancer types, with 5 samples for each cancer type. Please see \code{./inst/scripts/generateExtData.R} to see how it was generated.
@@ -15,12 +15,11 @@
 #' \dontrun{
 #' load("data/smallMutationData.RData")
 #' }
-#' @docType data
-#' @name smallMutationData.RData
+#' @name sampleSmallMutationData
 NULL
 
 #' List of Cancer Types
-#' \code{cancerTypeList.RData}
+#' \code{sampleCancerTypeList}
 #' Describes a list of the cancer types, i.e. filenames.
 #' @format An RData file with 27 filenames/strings:
 #' @source \url{https://www.nature.com/articles/nature12477#mutational-signatures-and-age-of-cancer-diagnosis}
@@ -29,6 +28,7 @@ NULL
 #' load("data/cancerTypeList.RData")
 #' }
 #' @docType data
-#' @name cancerTypeList.RData
+#' @name sampleCancerTypeList
 NULL
 
+# [END]

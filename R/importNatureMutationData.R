@@ -3,9 +3,6 @@
 #' @param directory the directory to search through
 #' @return The file strings.
 #' @seealso \code{\link{selectSubsitutionSubType}}
-#' @examples
-#' returnExomeFiles("~/files/mutational_catalogs/exomes")
-#' @export
 #'
 returnExomeFiles <- function(directory) {
   return(Sys.glob(file.path(directory, "*", "*.txt")))
@@ -17,9 +14,6 @@ returnExomeFiles <- function(directory) {
 #' @param subtype the subtype to match. Uses grep pattern matching.
 #' @return The file strings.
 #' @seealso \code{\link{returnExomeFiles}}
-#' @examples
-#' selectSubstitutionType("~/files/mutational_catalogs/exomes")
-#' @export
 #'
 selectSubsitutionSubType <- function(fileList, subtype = "96") {
   return(subtype <- fileList[grep(subtype, fileList)])
@@ -29,9 +23,6 @@ selectSubsitutionSubType <- function(fileList, subtype = "96") {
 #'
 #' @param directory specifically the directory of the supplementary data from the nature article (https://doi.org/10.1038/nature12477)
 #' @return A 2d matrix, with columns representing the cancer subtypes, and the rows representing the mutation frequencies
-#' @examples
-#' getNatureMutatationData("~/files/mutational_catalogs/exomes")
-#' @export
 #'
 getNatureMutatationData <- function(directory) {
   files <- returnExomeFiles(directory)
@@ -61,3 +52,4 @@ getNatureMutatationData <- function(directory) {
   df[1] <- NULL
   return(df)
 }
+# [END]

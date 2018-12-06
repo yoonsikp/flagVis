@@ -1,25 +1,16 @@
-library(NMF)
-
 #' \code{createAtlas} plots the average flag representation of each specified type. The function determines matching types by prefix matching the column name.
 #'
 #' @param x a flagVisData object, that has nmfData
 #' @param types the prefix strings that match a column name. An average nmf will be created over all columns that match the string.
 #' @seealso \code{\link{createFlag}}
 #' @examples
-#' x <- nmf(x)
-#' myData <- flagVis(x)
-#' files <- returnExomeFiles(directory)
-#' selectedFiles <- selectSubsitutionSubType(files)
-#' for (i in 1:length(selectedFiles)){
-#'    selectedFiles[i] <- tail(strsplit(selectedFiles[i], "/", fixed=TRUE)[[1]], n=1)
-#' }
-#' tail(strsplit(type, "/", fixed=TRUE)[[1]], n=1)
-#' createAtlas(myData, selectedFiles)
+#' myData <- flagVis(sampleSmallMutationData)
+#' createAtlas(myData, sampleCancerTypeList)
 #' @export
 #'
 createAtlas <- function (x, types) {
   for (type in types) {
-    grepNMF <- coef(x@nmfData)[, grepl(type, colnames(coef(x@nmfData)))]
+    grepNMF <- NMF::coef(x@nmfData)[, grepl(type, colnames(NMF::coef(x@nmfData)))]
     if (ncol(grepNMF) != 0) {
       for (i in 1:nrow(grepNMF)) {
         multiply <- max(grepNMF[i, ])
@@ -70,3 +61,5 @@ createFlag <- function (flagColors,
          lwd = 1)
   }
 }
+
+# [END]

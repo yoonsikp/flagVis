@@ -17,8 +17,6 @@ if (! require(NMF, quietly=TRUE)) {
   install.packages("NMF")
   library(NMF)
 }
-library(colorspace)
-library(flagVis)
 
 
 # ====  PROCESS  ===============================================================
@@ -26,19 +24,19 @@ library(flagVis)
 # code so that you can simply run this entire file and re-create all
 # intermediate results.
 
-# load dataset into variable x
+# load dataset into variable sampleSmallMutationData
 load("./data/smallMutationData.RData")
-# load selectedFiles, which contains all cancer type strings
+# load sampleCancerTypeList, which contains all cancer type strings
 load("./data/cancerTypeList.RData")
 
 # get NMF and RGB Transformation results
-flagVisResult <- flagVis(x)
+flagVisResult <- flagVis(sampleSmallMutationData)
 
 # average and plot all cancer types as flags
-createAtlas(flagVisResult, selectedFiles)
+createAtlas(flagVisResult, sampleCancerTypeList)
 
 # guess what flag this is?
 createFlag(flagVisResult@rgbData[,109], title="guess?")
 
 # here's the answer:
-print(colnames(coefficients(flagVisResult@nmfData))[109])
+print(colnames(NMF::coefficients(flagVisResult@nmfData))[109])

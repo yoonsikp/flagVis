@@ -17,10 +17,6 @@ A numeric vector.
 \description{
 \code{normalizeBasis} returns the normalized basis, based on the given normalization coefficients. This function divides each column in nmfBasis by the corresponding value in norms.
 }
-\examples{
-  norms <-getL1Norms(basis(nmfResult))
-  newBasis <-normalizeBasis(basis(nmfResult), norms)
-}
 \seealso{
 \code{\link{getL1Norms}}
 }

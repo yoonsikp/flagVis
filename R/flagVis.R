@@ -1,5 +1,3 @@
-library(NMF)
-
 #' \code{flagVis} reduces the dimensions of 2D matrix data and calculates multiple rgb values representing each sample. The rank of the NMF will be determined by factorsPerColor * numColors.
 #'
 #' @param x the 2D dataset. Only non-negative numeric values should be in the matrix. A row cannot contain all zeros.
@@ -9,8 +7,7 @@ library(NMF)
 #' @param calculateVarianceRank option to calculate the ranking of the normalized coefficient matrix rows by standard deviation (1 being highest)
 #' @return A flagVisData Class.
 #' @examples
-#' x <- getNatureMutatationData("/your/directory")
-#' myData <- flagVis(x)
+#' myData <- flagVis(flagVis::sampleSmallMutationData)
 #' @export
 #'
 
@@ -25,14 +22,14 @@ flagVis <- function(x,
     if (numColors <= 0) {
       stop("Need at least one color")
     }
-    nmfResult <- nmf(x, numColors * factorsPerColor, seed = seed)
+    nmfResult <- NMF::nmf(x, numColors * factorsPerColor, seed = seed)
     basisOrder <- data.frame(1:numColors * factorsPerColor)
     if (calculateVarianceRank) {
       basisOrder <- data.frame(rank(getNormalizedCoefSD(nmfResult) * -1))
     }
-    df <- cbind(coef(nmfResult))
-    for (i in 1:nrow(coef(nmfResult))) {
-      multiply <- max(coef(nmfResult)[i, ])
+    df <- cbind(NMF::coef(nmfResult))
+    for (i in 1:nrow(NMF::coef(nmfResult))) {
+      multiply <- max(NMF::coef(nmfResult)[i, ])
       df[i, ] <- df[i, ] / multiply
     }
     rgbData <- nmfDataToRGB(df)
@@ -41,6 +38,7 @@ flagVis <- function(x,
         "flagVisData",
         rgbData = rgbData,
         nmfData = nmfResult,
+        nmfNormData = df,
         basisOrder = basisOrder
       )
     return(retData)
@@ -53,15 +51,17 @@ flagVis <- function(x,
 #' @param basisOrder the ranking of the normalized coefficient matrix rows by standard deviation (1 being highest).
 #' @seealso \code{\link{flagVis}}
 #' @examples
-#' myData <- flagVis(x)
-#' createFlag(myData\@rgbData[,10])
+#' myData <- flagVis(flagVis::sampleSmallMutationData)
+#' createFlag(myData@rgbData[,10])
 #' @export
+#' @importClassesFrom NMF NMFfit
 #'
 setClass(
   "flagVisData",
   representation(
     rgbData = "array",
     nmfData = "NMFfit",
+    nmfNormData = "matrix",
     basisOrder = "data.frame"
   )
 )
@@ -71,20 +71,29 @@ setClass(
 #' @param x the coefficient matrix. Only non-negative numeric values should be in the matrix, with values between 0 and 1.
 #' @param factorsPerColor the number of factors each color should represent. Currently only supports the value of 2.
 #' @param numColors the number of colors to output for each column.
+#' @param colorPalette a List containing multiple color-class objects. These are used for coloring
 #' @return A 2D string array.
 #' @seealso \code{\link{flagVis}}
-#' @export
 #'
+#' @export
 nmfDataToRGB <- function (x,
                           factorsPerColor = 2,
-                          numColors = 4) {
+                          numColors = 4,
+                          colorPalette = NULL) {
   rgbData <- array(rep(NaN, numColors * ncol(x)), c(numColors, ncol(x)))
   for (i in 1:ncol(x)) {
     for (j in 1:numColors) {
       allFactors <-
         (x[((j - 1) * factorsPerColor + 1):((j - 1) * factorsPerColor + factorsPerColor), i])
-      rgbData[j, i] <-
-        convertValidRGB(transformPolarLAB(allFactors, getNextColor(2 * j), getNextColor(2 * j + 1)))
+      if (is.null(colorPalette)) {
+        rgbData[j, i] <-
+          convertValidRGB(transformPolarLAB(allFactors, getNextColor(2 * j), getNextColor(2 * j + 1)))
+      } else {
+        rgbData[j, i] <-
+          convertValidRGB(transformPolarLAB(allFactors, getNextColor(2 * j, colorPalette = colorPalette),
+                                            getNextColor(2 * j + 1, colorPalette = colorPalette)))
+      }
+
     }
   }
   return(rgbData)
@@ -94,10 +103,6 @@ nmfDataToRGB <- function (x,
 #'
 #' @param nmfBasis the basis matrix of the non-negative matrix factorization data
 #' @return A numeric vector.
-#' @examples
-#' x <- getNatureMutatationData(directory)
-#' getL1Norms(basis(nmf(x, 3)))
-#' @export
 #'
 #'
 getL1Norms <- function(nmfBasis) {
@@ -109,10 +114,6 @@ getL1Norms <- function(nmfBasis) {
 #' @param norms the normalization coefficients
 #' @return A numeric vector.
 #' @seealso \code{\link{getL1Norms}}
-#' @examples
-#'   norms <-getL1Norms(basis(nmfResult))
-#'   newBasis <-normalizeBasis(basis(nmfResult), norms)
-#' @export
 #'
 normalizeBasis <- function(nmfBasis, norms) {
   for (i in 1:ncol(nmfBasis)) {
@@ -126,10 +127,6 @@ normalizeBasis <- function(nmfBasis, norms) {
 #' @param norms the normalization coefficients
 #' @return A numeric vector.
 #' @seealso \code{\link{seq}}
-#' @examples
-#' norms <-getL1Norms(basis(nmfResult))
-#' normalizeCoef(coefficients(nmfResult), norms)
-#' @export
 #'
 normalizeCoef <- function(nmfCoef, norms) {
   for (i in 1:nrow(nmfCoef)) {
@@ -142,15 +139,11 @@ normalizeCoef <- function(nmfCoef, norms) {
 #'
 #' @param nmfResult the complete returned data from the non-negative matrix factorization
 #' @return A numeric vector.
-#' @examples
-#' myNMF <- nmf(x, 3)
-#' getNormalizedCoefSD(myNMF)
-#' @export
 #'
 getNormalizedCoefSD <- function(nmfResult) {
-  norms <- getL1Norms(basis(nmfResult))
-  newBasis <- normalizeBasis(basis(nmfResult), norms)
-  newCoefficients <- normalizeCoef(coefficients(nmfResult), norms)
+  norms <- getL1Norms(NMF::basis(nmfResult))
+  newBasis <- normalizeBasis(NMF::basis(nmfResult), norms)
+  newCoefficients <- normalizeCoef(NMF::coefficients(nmfResult), norms)
 
   df <- data.frame(matrix(ncol = nrow(newCoefficients), nrow = 1))
   for (i in 1:nrow(newCoefficients)) {
@@ -158,3 +151,5 @@ getNormalizedCoefSD <- function(nmfResult) {
   }
   return(df)
 }
+
+# [END]

@@ -15,8 +15,8 @@
 \code{flagVisData} A class to hold the data returned from the flagVis function. This includes the NMF data, the RGB data, and the normalized coefficient matrix ranking.
 }
 \examples{
-myData <- flagVis(x)
-createFlag(myData"at"rgbData[,10])
+myData <- flagVis(flagVis::sampleSmallMutationData)
+createFlag(myData@rgbData[,10])
 }
 \seealso{
 \code{\link{flagVis}}

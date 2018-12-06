@@ -4,7 +4,7 @@ Title: R Package Template
 Version: 0.1.0
 Author: Yoonsik Park
 Maintainer: Yoonsik Park <yoonsik.park@mail.utoronto.ca>
-Description: 	flagVis contains a set of tools to easily
+Description: flagVis contains a set of tools to easily
 		create colorful representations
 		of datasets, by performing a non-negative
 		matrix factorization. The inspiration
@@ -14,7 +14,8 @@ Description: 	flagVis contains a set of tools to easily
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: NMF, colorspace
+Imports: NMF, colorspace, methods
 Suggests:
-    testthat
-RoxygenNote: 6.1.0
+    testthat, shiny, knitr, colourpicker, rmarkdown
+RoxygenNote: 6.1.1
+VignetteBuilder: knitr

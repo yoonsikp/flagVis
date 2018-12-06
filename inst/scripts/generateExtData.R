@@ -30,7 +30,9 @@ for (i in 1:length(selectedFiles)){
    selectedFiles[i] <- tail(strsplit(selectedFiles[i], "/", fixed=TRUE)[[1]], n=1)
 }
 x <- miniDataset("/Users/yoonsik/Library/Mobile Documents/com~apple~CloudDocs/Current Courses/BCB410/testing/mutational_catalogs/exomes")
-save(x, file='./data/smallMutationData.RData')
-save(selectedFiles, file='./data/cancerTypeList.RData')
+sampleSmallMutationData <- x
+save(sampleSmallMutationData, file='./data/smallMutationData.RData')
+sampleCancerTypeList <- selectedFiles
+save(sampleCancerTypeList, file='./data/cancerTypeList.RData')
 
 

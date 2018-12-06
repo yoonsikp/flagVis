@@ -15,7 +15,3 @@ A numeric vector.
 \description{
 \code{getNormalizedCoefSD} calculates the standard deviation for each normalized row of the correlation matrix
 }
-\examples{
-myNMF <- nmf(x, 3)
-getNormalizedCoefSD(myNMF)
-}

@@ -15,9 +15,6 @@ The file strings.
 \description{
 \code{returnExomeFiles} searches through the directory of the Nature Mutation exome data, and returns a list of all readable .txt files
 }
-\examples{
-returnExomeFiles("~/files/mutational_catalogs/exomes")
-}
 \seealso{
 \code{\link{selectSubsitutionSubType}}
 }
