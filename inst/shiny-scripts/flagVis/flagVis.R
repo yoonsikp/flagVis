@@ -77,7 +77,7 @@ myServer <- function(input, output) {
         for (i in 1:nrow(grepNMF)) {
           averageDf[i] <- sum(grepNMF[i, ]) / ncol(grepNMF)
         }
-        createFlag(nmfDataToRGB(t(averageDf)), title = input$mytype)
+        createFlag(nmfDataToRGB(t(averageDf), colorPalette = myPalet), title = input$mytype)
       }
     }
 
