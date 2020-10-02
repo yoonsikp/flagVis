@@ -5,6 +5,10 @@ Please run `inst/shiny-scripts/flagVis/app.R` for a Shiny interface.
 
 Load the package with: `devtools::install_github("yoonsikp/flagVis")`
 
+# Sample Use Case
+<p align="center">
+  <img src=https://github.com/yoonsikp/flagVis/blob/master/flagVisPoster.jpeg?raw=true width=100%>
+</p>
 
 ## Introduction
 
